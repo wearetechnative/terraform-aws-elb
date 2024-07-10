@@ -31,3 +31,9 @@ variable "healtcheck_port" {
   type        = number
   default     = null
 }
+
+variable "target_type" {
+  description = "Port of the container that is the load balancer entrypoint. Optional if you use ECS with dynamoc port allocation."
+  type        = string
+  default     = "instance"
+}
