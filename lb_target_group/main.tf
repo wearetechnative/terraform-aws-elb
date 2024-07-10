@@ -33,7 +33,7 @@ resource "aws_lb_target_group" "this" {
     type            = "lb_cookie"
   }
 
-  target_type = var.target_container_port != null ? "instance" : "ip"
+  target_type = var.target_type #var.target_container_port #!= null ? "instance" : "ip"
   vpc_id      = var.vpc_id
 
   lifecycle {
