@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "this" {
 
   lambda_multi_value_headers_enabled = false
   load_balancing_algorithm_type      = "least_outstanding_requests"
-  name_prefix                        = "${var.name}-"
+  name                               = "${var.name}-tg"
   port                               = var.target_container_port == null ? 65535 : var.target_container_port
   # preserve_client_ip = false # nlb only
   protocol_version  = "HTTP1"
