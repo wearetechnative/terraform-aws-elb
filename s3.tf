@@ -1,5 +1,6 @@
 module "bucket_logs" {
-  source = "git@github.com:TechNative-B-V/terraform-aws-module-s3.git?ref=f95b7fd11f654192a74b7a0f0b7dae1004edf7be"
+  #source = "git@github.com:TechNative-B-V/terraform-aws-module-s3.git?ref=f95b7fd11f654192a74b7a0f0b7dae1004edf7be"
+  source = "git@github.com:wearetechnative/terraform-aws-s3.git?ref=6e015d2c17929142490aabfb580b83c6879bbdaa"
 
   name                                     = "alb-${local.name}-tl"
   kms_key_arn                              = null
