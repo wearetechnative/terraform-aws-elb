@@ -1,10 +1,10 @@
 module "bucket_logs" {
   source = "github.com/wearetechnative/terraform-aws-s3.git?ref=945d79d5d12cbc2e281afae53c74367a3c6bfd6e"
 
-  name                                     = "alb-${local.name}-tl"
+  name                                     = var.load_balancer_type == "network" ? "nlb-${local.name}-tl" : "alb-${local.name}-tl"
   kms_key_arn                              = null
   use_sse-s3_encryption_instead_of_sse-kms = true
-  bucket_policy_addition                   = jsondecode(data.aws_iam_policy_document.alb_access.json)
+  bucket_policy_addition                   = jsondecode(var.load_balancer_type == "network" ? data.aws_iam_policy_document.nlb_access.json : data.aws_iam_policy_document.alb_access.json)
 }
 
 data "aws_arn" "bucket_logs" {
@@ -78,4 +78,68 @@ data "aws_iam_policy_document" "alb_access" {
 
   #   resources = ["<bucket>"]
   # }
+}
+
+data "aws_iam_policy_document" "nlb_access" {
+
+  statement {
+    sid = "AllowPutObject"
+
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject",
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = [data.aws_caller_identity.current.account_id]
+    }
+
+    resources = ["<bucket>/*"]
+  }
+
+  statement {
+    sid = "AllowGetBucketAcl"
+
+    effect = "Allow"
+
+    actions = [
+      "s3:*",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["logdelivery.elb.amazonaws.com"]
+    }
+
+    resources = ["<bucket>"]
+  }
+
+    statement {
+    sid    = "AWSLogDeliveryAclCheck"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
+    actions   = ["s3:GetBucketAcl"]
+    resources = [module.bucket_logs.s3_arn]
+  }
+
+  statement {
+    sid    = "AWSLogDeliveryWrite"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
+    actions   = ["s3:PutObject"]
+    resources = ["${module.bucket_logs.s3_arn}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values   = ["bucket-owner-full-control"]
+    }
+  }
 }

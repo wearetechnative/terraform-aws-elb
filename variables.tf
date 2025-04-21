@@ -36,3 +36,9 @@ variable "disable_strict_desync_mitigation_mode" {
   type        = bool
   default     = false
 }
+
+variable "load_balancer_type" {
+  description = "Type of load balancer. Can be application or network."
+  type        = string
+  default     = "application"
+}
