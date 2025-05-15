@@ -1,4 +1,4 @@
-# Terraform AWS ELB ![](https://img.shields.io/github/workflow/status/TechNative-B-V/terraform-aws-module-name/tflint.yaml?style=plastic)
+# Terraform AWS ELB ![](https://img.shields.io/github/workflow/status/wearetechnative/terraform-aws-elb/tflint.yaml?style=plastic)
 
 <!-- SHIELDS -->
 
